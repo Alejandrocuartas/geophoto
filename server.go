@@ -8,11 +8,13 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/Alejandrocuartas/geophoto/graph"
+	"github.com/joho/godotenv"
 )
 
 const defaultPort = "8080"
 
 func main() {
+	godotenv.Load()
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
