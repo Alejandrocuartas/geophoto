@@ -1,28 +1,30 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
+type Query {
+  user(id: String!): User!
+  photos(lat: String!, long: String!): [Photo!]!
+}
 
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
+type Mutation {
+  newUser(password: String!, username: String!): User!
+  newPhoto(input: NewPhoto!): Photo!
 }
 
 type User {
   id: ID!
-  name: String!
+  username: String!
+  password: String!
 }
 
-type Query {
-  todos: [Todo!]!
+type Photo {
+  id: ID!
+  url: String!
+  lat: String!
+  long: String!
+  user: User!
 }
 
-input NewTodo {
-  text: String!
+input NewPhoto {
+  url: String!
+  lat: String!
+  long: String!
   userId: String!
-}
-
-type Mutation {
-  createTodo(input: NewTodo!): Todo!
 }

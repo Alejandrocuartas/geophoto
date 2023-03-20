@@ -2,19 +2,23 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
+type NewPhoto struct {
+	URL    string `json:"url"`
+	Lat    string `json:"lat"`
+	Long   string `json:"long"`
 	UserID string `json:"userId"`
 }
 
-type Todo struct {
+type Photo struct {
 	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
+	URL  string `json:"url"`
+	Lat  string `json:"lat"`
+	Long string `json:"long"`
 	User *User  `json:"user"`
 }
 
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }

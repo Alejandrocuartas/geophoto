@@ -11,14 +11,34 @@ import (
 	"github.com/Alejandrocuartas/geophoto/graph/model"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+// NewUser is the resolver for the newUser field.
+func (r *mutationResolver) NewUser(ctx context.Context, password string, username string) (*model.User, error) {
+	user := model.User{
+		ID:       "id",
+		Username: "Alejo",
+		Password: "pass",
+	}
+	return &user, nil
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
+// NewPhoto is the resolver for the newPhoto field.
+func (r *mutationResolver) NewPhoto(ctx context.Context, input model.NewPhoto) (*model.Photo, error) {
+	panic(fmt.Errorf("not implemented: NewPhoto - newPhoto"))
+}
+
+// User is the resolver for the user field.
+func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
+	user := model.User{
+		ID:       "id",
+		Username: "Alejo",
+		Password: "pass",
+	}
+	return &user, nil
+}
+
+// Photos is the resolver for the photos field.
+func (r *queryResolver) Photos(ctx context.Context, lat string, long string) ([]*model.Photo, error) {
+	panic(fmt.Errorf("not implemented: Photos - photos"))
 }
 
 // Mutation returns MutationResolver implementation.
