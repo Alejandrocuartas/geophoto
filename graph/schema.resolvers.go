@@ -6,8 +6,8 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/Alejandrocuartas/geophoto/database/collections"
 	"github.com/Alejandrocuartas/geophoto/graph/model"
 )
 
@@ -18,18 +18,28 @@ func (r *mutationResolver) NewUser(ctx context.Context, password string, usernam
 		Username: "Alejo",
 		Password: "pass",
 	}
+	collections.UserCollection()
+
 	return &user, nil
 }
 
 // NewPhoto is the resolver for the newPhoto field.
 func (r *mutationResolver) NewPhoto(ctx context.Context, input model.NewPhoto) (*model.Photo, error) {
-	panic(fmt.Errorf("not implemented: NewPhoto - newPhoto"))
+	//create a new photo with Lon, Lat, User, URL and ID keys and return it
+	photo := model.Photo{
+		ID:   "id",
+		URL:  "url",
+		User: &model.User{ID: "user"},
+		Long: "lon",
+		Lat:  "lat",
+	}
+	return &photo, nil
 }
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
 	user := model.User{
-		ID:       "id",
+		ID:       id,
 		Username: "Alejo",
 		Password: "pass",
 	}
@@ -38,7 +48,24 @@ func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error
 
 // Photos is the resolver for the photos field.
 func (r *queryResolver) Photos(ctx context.Context, lat string, long string) ([]*model.Photo, error) {
-	panic(fmt.Errorf("not implemented: Photos - photos"))
+	// Create a list of photos with lat, long, url, id and User and return them
+	photos := []*model.Photo{
+		{
+			ID:   "photo1",
+			URL:  "http://www.google.com",
+			User: &model.User{ID: "user1"},
+			Lat:  lat,
+			Long: long,
+		},
+		{
+			ID:   "photo2",
+			URL:  "http://www.google.com",
+			User: &model.User{ID: "user2"},
+			Lat:  lat,
+			Long: long,
+		},
+	}
+	return photos, nil
 }
 
 // Mutation returns MutationResolver implementation.
