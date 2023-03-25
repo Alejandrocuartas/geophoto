@@ -7,19 +7,16 @@ package graph
 import (
 	"context"
 
-	"github.com/Alejandrocuartas/geophoto/database/collections"
 	"github.com/Alejandrocuartas/geophoto/graph/model"
+	"github.com/Alejandrocuartas/geophoto/services/user"
 )
 
 // NewUser is the resolver for the newUser field.
 func (r *mutationResolver) NewUser(ctx context.Context, password string, username string) (*model.User, error) {
-	user := model.User{
-		ID:       "id",
-		Username: "Alejo",
-		Password: "pass",
+	user, err := user.SaveUser(ctx, username, password)
+	if err != nil {
+		return nil, err
 	}
-	collections.UserCollection()
-
 	return &user, nil
 }
 
