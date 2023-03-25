@@ -10,7 +10,7 @@ type NewPhoto struct {
 }
 
 type Photo struct {
-	ID   string `json:"id"`
+	ID   string `json:"id" bson:"_id,omitempty"`
 	URL  string `json:"url"`
 	Lat  string `json:"lat"`
 	Long string `json:"long"`
@@ -18,7 +18,13 @@ type Photo struct {
 }
 
 type User struct {
-	ID       string `json:"id"`
+	ID       string `json:"id" bson:"_id,omitempty"`
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+type UserRegistration struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	Jwt      string `json:"jwt"`
 }
