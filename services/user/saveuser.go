@@ -28,7 +28,7 @@ func SaveUser(ctx context.Context, username string, password string) (model.User
 	var existing model.User
 	err := userExist.Decode(&existing)
 	if err != mongo.ErrNoDocuments {
-		return model.User{}, err
+		return model.User{}, &MyError{message: "Username already exists."}
 	}
 	//save user
 	salt, e := helpers.EncryptPassword(password)
