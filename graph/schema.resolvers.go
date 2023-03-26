@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Alejandrocuartas/geophoto/graph/model"
 	"github.com/Alejandrocuartas/geophoto/helpers"
@@ -45,7 +44,19 @@ func (r *mutationResolver) NewPhoto(ctx context.Context, input model.NewPhoto) (
 
 // Login is the resolver for the login field.
 func (r *queryResolver) Login(ctx context.Context, password string, username string) (*model.UserRegistration, error) {
-	panic(fmt.Errorf("not implemented: Login - login"))
+	u, e := user.Login(ctx, username, password)
+	if e != nil {
+		return nil, e
+	}
+	jwt, err := helpers.GenerateToken(u.ID)
+	if err != nil {
+		return nil, err
+	}
+	return &model.UserRegistration{
+		ID:       u.ID,
+		Username: u.Username,
+		Jwt:      jwt,
+	}, nil
 }
 
 // Photos is the resolver for the photos field.
