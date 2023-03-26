@@ -22,3 +22,9 @@ type User struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
+
+type UserRegistration struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	Jwt      string `json:"jwt"`
+}
