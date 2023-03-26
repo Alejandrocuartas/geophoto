@@ -17,13 +17,7 @@ func EncryptPassword(password string) (string, error) {
 }
 
 // create a function that validate the password and return true if it succeeded
-func ValidatePassword(password string) (bool, error) {
-
-	//create a byte array
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return false, err
-	}
-	isCorrect := bcrypt.CompareHashAndPassword(bytes, []byte(password)) == nil
+func ValidatePassword(password, correctPass string) (bool, error) {
+	isCorrect := bcrypt.CompareHashAndPassword([]byte(correctPass), []byte(password)) == nil
 	return isCorrect, nil
 }
