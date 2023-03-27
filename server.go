@@ -9,12 +9,16 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/Alejandrocuartas/geophoto/database"
 	"github.com/Alejandrocuartas/geophoto/graph"
+	"github.com/Alejandrocuartas/geophoto/middlewares"
+	"github.com/go-chi/chi"
 	"github.com/joho/godotenv"
 )
 
 const defaultPort = "8080"
 
 func main() {
+	r := chi.NewRouter()
+	r.Use(middlewares.Auth)
 	godotenv.Load()
 	database.Init()
 	port := os.Getenv("PORT")
@@ -24,9 +28,9 @@ func main() {
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	r.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	r.Handle("/query", srv)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, r))
 }
