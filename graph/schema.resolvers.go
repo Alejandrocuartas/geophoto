@@ -9,6 +9,7 @@ import (
 
 	"github.com/Alejandrocuartas/geophoto/graph/model"
 	"github.com/Alejandrocuartas/geophoto/helpers"
+	"github.com/Alejandrocuartas/geophoto/services/photo"
 	"github.com/Alejandrocuartas/geophoto/services/user"
 )
 
@@ -32,12 +33,9 @@ func (r *mutationResolver) NewUser(ctx context.Context, password string, usernam
 // NewPhoto is the resolver for the newPhoto field.
 func (r *mutationResolver) NewPhoto(ctx context.Context, input model.NewPhoto) (*model.Photo, error) {
 	//create a new photo with Lon, Lat, User, URL and ID keys and return it
-	photo := model.Photo{
-		ID:   "id",
-		URL:  "url",
-		User: &model.User{ID: "user"},
-		Long: "lon",
-		Lat:  "lat",
+	photo, e := photo.SavePhoto(ctx, input)
+	if e != nil {
+		return nil, e
 	}
 	return &photo, nil
 }
