@@ -7,7 +7,6 @@ package graph
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/Alejandrocuartas/geophoto/graph/model"
 	"github.com/Alejandrocuartas/geophoto/helpers"
@@ -37,7 +36,6 @@ func (r *mutationResolver) NewUser(ctx context.Context, password string, usernam
 func (r *mutationResolver) NewPhoto(ctx context.Context, input model.NewPhoto) (*model.Photo, error) {
 	//verify authentication
 	userId := ctx.Value(types.Auth)
-	fmt.Println(userId)
 	if userId == "" {
 		return nil, errors.New("error authentication")
 	}
