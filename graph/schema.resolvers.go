@@ -6,11 +6,14 @@ package graph
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	"github.com/Alejandrocuartas/geophoto/graph/model"
 	"github.com/Alejandrocuartas/geophoto/helpers"
 	"github.com/Alejandrocuartas/geophoto/services/photo"
 	"github.com/Alejandrocuartas/geophoto/services/user"
+	"github.com/Alejandrocuartas/geophoto/types"
 )
 
 // NewUser is the resolver for the newUser field.
@@ -32,6 +35,12 @@ func (r *mutationResolver) NewUser(ctx context.Context, password string, usernam
 
 // NewPhoto is the resolver for the newPhoto field.
 func (r *mutationResolver) NewPhoto(ctx context.Context, input model.NewPhoto) (*model.Photo, error) {
+	//verify authentication
+	userId := ctx.Value(types.Auth)
+	fmt.Println(userId)
+	if userId == "" {
+		return nil, errors.New("error authentication")
+	}
 	//create a new photo with Lon, Lat, User, URL and ID keys and return it
 	photo, e := photo.SavePhoto(ctx, input)
 	if e != nil {
