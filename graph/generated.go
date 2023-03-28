@@ -44,17 +44,21 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	Location struct {
+		Coordinates func(childComplexity int) int
+		Type        func(childComplexity int) int
+	}
+
 	Mutation struct {
 		NewPhoto func(childComplexity int, input model.NewPhoto) int
 		NewUser  func(childComplexity int, password string, username string) int
 	}
 
 	Photo struct {
-		ID   func(childComplexity int) int
-		Lat  func(childComplexity int) int
-		Long func(childComplexity int) int
-		URL  func(childComplexity int) int
-		User func(childComplexity int) int
+		ID       func(childComplexity int) int
+		Location func(childComplexity int) int
+		URL      func(childComplexity int) int
+		User     func(childComplexity int) int
 	}
 
 	Query struct {
@@ -99,6 +103,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
+	case "Location.coordinates":
+		if e.complexity.Location.Coordinates == nil {
+			break
+		}
+
+		return e.complexity.Location.Coordinates(childComplexity), true
+
+	case "Location.type":
+		if e.complexity.Location.Type == nil {
+			break
+		}
+
+		return e.complexity.Location.Type(childComplexity), true
+
 	case "Mutation.newPhoto":
 		if e.complexity.Mutation.NewPhoto == nil {
 			break
@@ -130,19 +148,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Photo.ID(childComplexity), true
 
-	case "Photo.lat":
-		if e.complexity.Photo.Lat == nil {
+	case "Photo.location":
+		if e.complexity.Photo.Location == nil {
 			break
 		}
 
-		return e.complexity.Photo.Lat(childComplexity), true
-
-	case "Photo.long":
-		if e.complexity.Photo.Long == nil {
-			break
-		}
-
-		return e.complexity.Photo.Long(childComplexity), true
+		return e.complexity.Photo.Location(childComplexity), true
 
 	case "Photo.url":
 		if e.complexity.Photo.URL == nil {
@@ -452,6 +463,94 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
+func (ec *executionContext) _Location_type(ctx context.Context, field graphql.CollectedField, obj *model.Location) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Location_type(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Location_type(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Location",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Location_coordinates(ctx context.Context, field graphql.CollectedField, obj *model.Location) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Location_coordinates(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Coordinates, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]float64)
+	fc.Result = res
+	return ec.marshalNFloat2ᚕfloat64ᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Location_coordinates(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Location",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_newUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_newUser(ctx, field)
 	if err != nil {
@@ -556,10 +655,8 @@ func (ec *executionContext) fieldContext_Mutation_newPhoto(ctx context.Context, 
 				return ec.fieldContext_Photo_id(ctx, field)
 			case "url":
 				return ec.fieldContext_Photo_url(ctx, field)
-			case "lat":
-				return ec.fieldContext_Photo_lat(ctx, field)
-			case "long":
-				return ec.fieldContext_Photo_long(ctx, field)
+			case "location":
+				return ec.fieldContext_Photo_location(ctx, field)
 			case "user":
 				return ec.fieldContext_Photo_user(ctx, field)
 			}
@@ -668,8 +765,8 @@ func (ec *executionContext) fieldContext_Photo_url(ctx context.Context, field gr
 	return fc, nil
 }
 
-func (ec *executionContext) _Photo_lat(ctx context.Context, field graphql.CollectedField, obj *model.Photo) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Photo_lat(ctx, field)
+func (ec *executionContext) _Photo_location(ctx context.Context, field graphql.CollectedField, obj *model.Photo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Photo_location(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -682,7 +779,7 @@ func (ec *executionContext) _Photo_lat(ctx context.Context, field graphql.Collec
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Lat, nil
+		return obj.Location, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -694,63 +791,25 @@ func (ec *executionContext) _Photo_lat(ctx context.Context, field graphql.Collec
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*model.Location)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNLocation2ᚖgithubᚗcomᚋAlejandrocuartasᚋgeophotoᚋgraphᚋmodelᚐLocation(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Photo_lat(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Photo_location(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Photo",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Photo_long(ctx context.Context, field graphql.CollectedField, obj *model.Photo) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Photo_long(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Long, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Photo_long(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Photo",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			switch field.Name {
+			case "type":
+				return ec.fieldContext_Location_type(ctx, field)
+			case "coordinates":
+				return ec.fieldContext_Location_coordinates(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Location", field.Name)
 		},
 	}
 	return fc, nil
@@ -912,10 +971,8 @@ func (ec *executionContext) fieldContext_Query_photos(ctx context.Context, field
 				return ec.fieldContext_Photo_id(ctx, field)
 			case "url":
 				return ec.fieldContext_Photo_url(ctx, field)
-			case "lat":
-				return ec.fieldContext_Photo_lat(ctx, field)
-			case "long":
-				return ec.fieldContext_Photo_long(ctx, field)
+			case "location":
+				return ec.fieldContext_Photo_location(ctx, field)
 			case "user":
 				return ec.fieldContext_Photo_user(ctx, field)
 			}
@@ -3160,6 +3217,41 @@ func (ec *executionContext) unmarshalInputNewPhoto(ctx context.Context, obj inte
 
 // region    **************************** object.gotpl ****************************
 
+var locationImplementors = []string{"Location"}
+
+func (ec *executionContext) _Location(ctx context.Context, sel ast.SelectionSet, obj *model.Location) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, locationImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Location")
+		case "type":
+
+			out.Values[i] = ec._Location_type(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "coordinates":
+
+			out.Values[i] = ec._Location_coordinates(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var mutationImplementors = []string{"Mutation"}
 
 func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -3222,16 +3314,9 @@ func (ec *executionContext) _Photo(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "lat":
+		case "location":
 
-			out.Values[i] = ec._Photo_lat(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "long":
-
-			out.Values[i] = ec._Photo_long(ctx, field, obj)
+			out.Values[i] = ec._Photo_location(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
@@ -3749,6 +3834,53 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v interface{}) (float64, error) {
+	res, err := graphql.UnmarshalFloatContext(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.SelectionSet, v float64) graphql.Marshaler {
+	res := graphql.MarshalFloatContext(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return graphql.WrapContextMarshaler(ctx, res)
+}
+
+func (ec *executionContext) unmarshalNFloat2ᚕfloat64ᚄ(ctx context.Context, v interface{}) ([]float64, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]float64, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNFloat2float64(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNFloat2ᚕfloat64ᚄ(ctx context.Context, sel ast.SelectionSet, v []float64) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNFloat2float64(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -3762,6 +3894,16 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNLocation2ᚖgithubᚗcomᚋAlejandrocuartasᚋgeophotoᚋgraphᚋmodelᚐLocation(ctx context.Context, sel ast.SelectionSet, v *model.Location) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Location(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNNewPhoto2githubᚗcomᚋAlejandrocuartasᚋgeophotoᚋgraphᚋmodelᚐNewPhoto(ctx context.Context, v interface{}) (model.NewPhoto, error) {

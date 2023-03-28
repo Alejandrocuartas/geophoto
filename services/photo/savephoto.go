@@ -6,6 +6,7 @@ import (
 
 	"github.com/Alejandrocuartas/geophoto/database/collections"
 	"github.com/Alejandrocuartas/geophoto/graph/model"
+	"github.com/Alejandrocuartas/geophoto/helpers"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -35,11 +36,23 @@ func SavePhoto(ctx context.Context, input model.NewPhoto) (model.Photo, error) {
 		return model.Photo{}, &MyError{message: "User does not exist."}
 	}
 	//save user
+	lo, e := helpers.ParseStringToFloat(input.Long)
+	if e != nil {
+		return model.Photo{}, &MyError{message: "Error parsing long into float."}
+	}
+	la, e := helpers.ParseStringToFloat(input.Lat)
+	if e != nil {
+		return model.Photo{}, &MyError{message: "Error parsing lat into float."}
+	}
+	coords := []float64{lo, la}
+	newLocation := &model.Location{
+		Type:        "Point",
+		Coordinates: coords,
+	}
 	newPhoto := model.Photo{
-		Lat:  input.Lat,
-		Long: input.Long,
-		URL:  input.URL,
-		User: &existing,
+		Location: newLocation,
+		URL:      input.URL,
+		User:     &existing,
 	}
 	newP, err := Photo.InsertOne(ctx, newPhoto)
 	if err != nil {
