@@ -67,22 +67,8 @@ func (r *queryResolver) Login(ctx context.Context, password string, username str
 // Photos is the resolver for the photos field.
 func (r *queryResolver) Photos(ctx context.Context, lat string, long string) ([]*model.Photo, error) {
 	// Create a list of photos with lat, long, url, id and User and return them
-	photos := []*model.Photo{
-		{
-			ID:   "photo1",
-			URL:  "http://www.google.com",
-			User: &model.User{ID: "user1"},
-			Lat:  lat,
-			Long: long,
-		},
-		{
-			ID:   "photo2",
-			URL:  "http://www.google.com",
-			User: &model.User{ID: "user2"},
-			Lat:  lat,
-			Long: long,
-		},
-	}
+	var photos []*model.Photo
+	photos, _ = photo.GetPhotos(ctx, lat, long)
 	return photos, nil
 }
 

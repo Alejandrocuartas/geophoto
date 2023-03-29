@@ -23,9 +23,13 @@ type UserRegistration {
 type Photo {
   id: ID!
   url: String!
-  lat: String!
-  long: String!
+  location: Location!
   user: User!
+}
+
+type Location {
+	type:        String!
+	coordinates: [Float!]!
 }
 
 input NewPhoto {
