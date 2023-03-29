@@ -44,8 +44,6 @@ func (c *Client) read() {
 			continue
 		}
 
-		log.Printf("Received message: %s", message)
-
 		// Broadcast message to all connected clients
 		c.Hub.broadcast <- message
 	}
