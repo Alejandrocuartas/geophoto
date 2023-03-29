@@ -1,14 +1,12 @@
 package sockets
 
 import (
-	//"encoding/json"
-	"fmt"
+	"encoding/json"
 	"log"
 
+	"github.com/Alejandrocuartas/geophoto/graph/model"
 	"github.com/gorilla/websocket"
 )
-
-type Message string
 
 type Client struct {
 	Hub  *Hub
@@ -16,17 +14,17 @@ type Client struct {
 	send chan []byte
 }
 
-func NewClient(hub *Hub, conn *websocket.Conn) *Client {
+func newClient(hub *Hub, conn *websocket.Conn) *Client {
 	newClient := &Client{
 		Hub:  hub,
 		Conn: conn,
 		send: make(chan []byte),
 	}
-	hub.Register <- newClient
+	hub.register <- newClient
 	return newClient
 }
 
-func (c *Client) Read() {
+func (c *Client) read() {
 	defer func() {
 		c.Hub.unregister <- c
 		c.Conn.Close()
@@ -39,21 +37,21 @@ func (c *Client) Read() {
 			break
 		}
 
-		//var msg Message
-		//err = json.Unmarshal(message, &msg)
-		//if err != nil {
-		//		log.Println("Error decoding JSON message:", err)
-		//	continue
-		//}
+		var msg model.Photo
+		err = json.Unmarshal(message, &msg)
+		if err != nil {
+			log.Println("Error decoding JSON message:", err)
+			continue
+		}
 
-		log.Printf("Received message from %s:", message)
+		log.Printf("Received message: %s", message)
 
 		// Broadcast message to all connected clients
 		c.Hub.broadcast <- message
 	}
 }
 
-func (c *Client) Write() {
+func (c *Client) write() {
 	defer func() {
 		c.Conn.Close()
 	}()
@@ -66,14 +64,14 @@ func (c *Client) Write() {
 	}
 }
 
-func (c *Client) Serve() {
-	go c.Write()
-	c.Read()
+func (c *Client) serve() {
+	go c.write()
+	c.read()
 }
 
 type Hub struct {
 	clients    map[*Client]bool
-	Register   chan *Client
+	register   chan *Client
 	unregister chan *Client
 	broadcast  chan []byte
 }
@@ -81,7 +79,7 @@ type Hub struct {
 func NewHub() *Hub {
 	return &Hub{
 		clients:    make(map[*Client]bool),
-		Register:   make(chan *Client),
+		register:   make(chan *Client),
 		unregister: make(chan *Client),
 		broadcast:  make(chan []byte),
 	}
@@ -90,7 +88,7 @@ func NewHub() *Hub {
 func (h *Hub) Run() {
 	for {
 		select {
-		case client := <-h.Register:
+		case client := <-h.register:
 			h.clients[client] = true
 		case client := <-h.unregister:
 			if _, ok := h.clients[client]; ok {
@@ -102,30 +100,10 @@ func (h *Hub) Run() {
 				select {
 				case client.send <- message:
 				default:
-					fmt.Println("here2")
 					close(client.send)
 					//delete(h.clients, client)
 				}
 			}
 		}
-	}
-}
-
-////////////
-
-func HandleWebSocketConnection(conn *websocket.Conn) {
-	defer conn.Close()
-
-	// Read messages from the WebSocket connection
-	for {
-		_, message, err := conn.ReadMessage()
-		if err != nil {
-			log.Printf("Failed to read message from WebSocket connection: %v", err)
-			break
-		}
-
-		log.Printf("Received message: %s", message)
-
-		// TODO: Handle the WebSocket message
 	}
 }
