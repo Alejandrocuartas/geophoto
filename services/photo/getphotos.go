@@ -10,7 +10,6 @@ import (
 )
 
 func GetPhotos(ctx context.Context, lat string, long string) ([]*model.Photo, error) {
-	// Create a list of photos with lat, long, url, id and User and return them
 	coll := collections.PhotoCollection()
 	var photos []*model.Photo
 	lo, e := helpers.ParseStringToFloat(long)
@@ -41,12 +40,10 @@ func GetPhotos(ctx context.Context, lat string, long string) ([]*model.Photo, er
 		if err != nil {
 			return []*model.Photo{}, err
 		}
-
 		photos = append(photos, elem)
 	}
 	if err != nil {
 		return []*model.Photo{}, err
 	}
-
 	return photos, nil
 }
