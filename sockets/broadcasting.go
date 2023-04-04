@@ -1,10 +1,8 @@
 package sockets
 
 import (
-	"encoding/json"
 	"log"
 
-	"github.com/Alejandrocuartas/geophoto/graph/model"
 	"github.com/gorilla/websocket"
 )
 
@@ -35,13 +33,6 @@ func (c *Client) read() {
 		if err != nil {
 			log.Println(err)
 			break
-		}
-
-		var msg model.Photo
-		err = json.Unmarshal(message, &msg)
-		if err != nil {
-			log.Println("Error decoding JSON message:", err)
-			continue
 		}
 
 		// Broadcast message to all connected clients
