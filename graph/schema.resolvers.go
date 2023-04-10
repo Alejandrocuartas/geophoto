@@ -8,6 +8,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/Alejandrocuartas/geophoto/database/collections"
 	"github.com/Alejandrocuartas/geophoto/graph/model"
 	"github.com/Alejandrocuartas/geophoto/helpers"
 	"github.com/Alejandrocuartas/geophoto/services/photo"
@@ -68,7 +69,7 @@ func (r *queryResolver) Login(ctx context.Context, password string, username str
 func (r *queryResolver) Photos(ctx context.Context, lat string, long string) ([]*model.Photo, error) {
 	// Create a list of photos with lat, long, url, id and User and return them
 	var photos []*model.Photo
-	photos, _ = photo.GetPhotos(ctx, lat, long)
+	photos, _ = photo.GetPhotos(collections.PhotoCollection())(ctx, lat, long)
 	return photos, nil
 }
 
