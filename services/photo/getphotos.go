@@ -7,10 +7,11 @@ import (
 	"github.com/Alejandrocuartas/geophoto/graph/model"
 	"github.com/Alejandrocuartas/geophoto/helpers"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func GetPhotos(ctx context.Context, lat string, long string) ([]*model.Photo, error) {
-	coll := collections.PhotoCollection()
+	var coll *mongo.Collection = collections.PhotoCollection()
 	var photos []*model.Photo
 	lo, e := helpers.ParseStringToFloat(long)
 	if e != nil {
