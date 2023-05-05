@@ -43,9 +43,9 @@ func main() {
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 
+	// r := chi.NewRouter()
 	hub := sockets.NewHub()
 	go hub.Run()
-
 	r.HandleFunc(websocketPath, func(w http.ResponseWriter, r *http.Request) {
 		sockets.SocketsHTTP(w, r, hub)
 	})

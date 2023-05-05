@@ -3,7 +3,6 @@ package sockets
 import (
 	"log"
 	"net/http"
-
 	"github.com/gorilla/websocket"
 )
 
@@ -27,8 +26,6 @@ func SocketsHTTP(w http.ResponseWriter, r *http.Request, hub *Hub) {
 		log.Printf("Failed to upgrade WebSocket connection: %v", err)
 		return
 	}
-
 	// Handle the WebSocket connection
 	go handleWebSocketConnection(conn, hub)
-
 }

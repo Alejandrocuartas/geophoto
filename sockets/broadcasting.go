@@ -2,7 +2,6 @@ package sockets
 
 import (
 	"log"
-
 	"github.com/gorilla/websocket"
 )
 
@@ -34,7 +33,6 @@ func (c *Client) read() {
 			log.Println(err)
 			break
 		}
-
 		// Broadcast message to all connected clients
 		c.Hub.broadcast <- message
 	}
@@ -90,7 +88,6 @@ func (h *Hub) Run() {
 				case client.send <- message:
 				default:
 					close(client.send)
-					//delete(h.clients, client)
 				}
 			}
 		}
